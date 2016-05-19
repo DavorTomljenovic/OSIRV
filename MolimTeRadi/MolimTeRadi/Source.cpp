@@ -27,14 +27,14 @@ bool c3Type = 0;
 int frames = 0;
 int area = 0;
 
-//Ispis pogresaka u log datoteku
+//Ispis pogrešaka u log datoteku
 void ErrorExit(LPSTR lpszMessage) {
 	fprintf(stderr, "%s\n", lpszMessage);
 	SetConsoleMode(hStdin, fdwSaveOldMode);
 	ExitProcess(0);
 }
 
-//Ukljucivanje debugginga i postavljanje kanala
+//Ukljuèivanje debugginga i postavljanje kanala
 void KeyEventProc(KEY_EVENT_RECORD key) {
 	if (key.bKeyDown) {
 
@@ -112,13 +112,14 @@ void simulateKeyPress(int no_fingers){
 	}
 }
 
-//Odreðivanje podrucja dlana
+//Odreðivanje podruèja dlana
 Mat getConvexHull(Mat foreground, Mat frame){
 
 	vector<vector<Point> > contours;
 
 	vector<vector<Point> > tcontours;
 
+	//Odreðivanje kontura
 	findContours(foreground, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
 	int no_fingers = 0;
@@ -126,7 +127,7 @@ Mat getConvexHull(Mat foreground, Mat frame){
 
 	for (int i = 0; i < contours.size(); i++){
 
-		if (contourArea(contours[i]) >= 8000) //Zanemaruje mala podrucja
+		if (contourArea(contours[i]) >= 8000) //Zanemaruje mala podruèja
 		{
 			tcontours.push_back(contours[i]);
 
@@ -135,7 +136,7 @@ Mat getConvexHull(Mat foreground, Mat frame){
 			vector<vector<int> > hullsI(1);
 			convexHull(Mat(tcontours[0]), hulls[0], false);
 			convexHull(Mat(tcontours[0]), hullsI[0], false);
-			//Detekcija rubova
+			
 			drawContours(frame, hulls, -1, cv::Scalar(0, 255, 0), 2);
 
 			RotatedRect rect = minAreaRect(Mat(tcontours[0]));
@@ -228,11 +229,6 @@ int main(int argc, char *argv[])
 		cv::inRange(channels[0], cv::Scalar(54), cv::Scalar(163), channels[0]);
 		cv::inRange(channels[1], cv::Scalar(130), cv::Scalar(165), channels[1]);
 		cv::inRange(channels[2], cv::Scalar(128), cv::Scalar(129), channels[2]);
-
-		//Binarizacija
-		threshold(channels[0], channels[0], 0, 255, c1Type);
-		threshold(channels[1], channels[1], 0, 255, c2Type);
-		threshold(channels[2], channels[2], 0, 255, c3Type);
 
 		//Otklanjanje suma - Morfoloske operacije
 		for (int i = 0; i < 3; i++){
