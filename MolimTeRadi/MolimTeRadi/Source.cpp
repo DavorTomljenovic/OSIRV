@@ -220,7 +220,6 @@ int main(int argc, char *argv[])
 
 		//Promjena formata boje
 		cv::cvtColor(frame, foreground, cv::COLOR_BGR2YCrCb);
-		YCRCB = foreground.clone();
 
 		//Podjela u 3 zasebna kanala
 		split(foreground, channels);
@@ -229,6 +228,10 @@ int main(int argc, char *argv[])
 		cv::inRange(channels[0], cv::Scalar(54), cv::Scalar(163), channels[0]);
 		cv::inRange(channels[1], cv::Scalar(130), cv::Scalar(165), channels[1]);
 		cv::inRange(channels[2], cv::Scalar(128), cv::Scalar(129), channels[2]);
+
+		threshold(channels[0], channels[0], 0, 255, c1Type);
+		threshold(channels[1], channels[1], 0, 255, c2Type);
+		threshold(channels[2], channels[2], 0, 255, c3Type);
 
 		//Otklanjanje suma - Morfoloske operacije
 		for (int i = 0; i < 3; i++){
