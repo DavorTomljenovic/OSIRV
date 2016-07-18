@@ -4,6 +4,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <windows.h>
 
@@ -26,6 +27,9 @@ bool c3Type = 0;
 
 int frames = 0;
 int area = 0;
+int height = 0;
+int width = 0;
+int testArea = 0;
 
 //Ispis pogrešaka u log datoteku
 void ErrorExit(LPSTR lpszMessage) {
@@ -146,8 +150,13 @@ Mat getConvexHull(Mat foreground, Mat frame){
 			for (int j = 0; j < 4; j++)
 				line(frame, rect_points[j], rect_points[(j + 1) % 4], Scalar(255, 0, 0), 1, 8);
 
-			//cout << "Width height" << rect.size << endl;
 			Size2f size = rect.size;
+
+			//VEKTOR ZNACAJKI
+			width = size.width;
+			height = size.height;
+			testArea = width*height;
+			///////////////////////
 
 			area += size.width*size.height;
 			frames++;
@@ -180,6 +189,12 @@ Mat getConvexHull(Mat foreground, Mat frame){
 
 int main(int argc, char *argv[])
 {
+	ofstream dataset;
+	dataset.open("HandGestureData.csv");
+	dataset << "Width,Height,Area,Gesture\n";
+	//POSTAVI RUCNO ZA SVAKU GESTU
+	int gesture = 2;
+
 	bool init = false;
 
 	Mat frame;
@@ -275,6 +290,7 @@ int main(int argc, char *argv[])
 			imshow("Drugi kanal", channels[1]);
 			imshow("Treci kanal", channels[2]);
 			imshow("Temp", temp);
+			dataset << width << "," << height << "," << testArea << ","<< gesture<< "\n";
 		}
 
 		imshow("Original", frame); //Prikaz framea u prozoru "Live camera"
@@ -286,6 +302,6 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-
+	dataset.close();
 	return 0;
 }
